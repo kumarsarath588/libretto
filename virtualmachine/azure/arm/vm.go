@@ -5,7 +5,6 @@ package arm
 
 import (
 	"errors"
-	"fmt"
 	"net"
 	"strings"
 	"time"
@@ -93,7 +92,7 @@ type VM struct {
 	VirtualNetwork       string
 
 	// deployment
-	deploymentName string
+	DeploymentName string
 }
 
 // GetName returns the name of the VM.
@@ -109,13 +108,6 @@ func (vm *VM) Provision() error {
 	if err != nil {
 		return err
 	}
-
-	// Set up private members of the VM
-	tempName := fmt.Sprintf("%s-%s", vm.Name, randStringRunes(6))
-	vm.OsFile = tempName + "-os-disk.vhd"
-	vm.PublicIP = tempName + "-public-ip"
-	vm.Nic = tempName + "-nic"
-	vm.deploymentName = tempName + "-deploy"
 
 	publicIPLength := len(vm.PublicIP)
 	if publicIPLength > maxPublicIPLength {

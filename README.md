@@ -102,6 +102,11 @@ vm := &azure.VM{
    NetworkSecurityGroup: "libretto-sg",
    VirtualNetwork:       "libretto-vn",
    Subnet:               "libretto-sn",
+
+   OsFile:               "libretto-os-disk.vhd",
+   PublicIP:             "libretto-public-ip",
+   Nic:                  "libretto-nic"
+   DeploymentName:       "libretto-deploy",
 }
 
 if err := vm.Provision(); err != nil {

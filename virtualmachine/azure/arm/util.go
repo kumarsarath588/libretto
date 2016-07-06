@@ -5,7 +5,6 @@ package arm
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net"
 	"time"
 
@@ -149,14 +148,14 @@ func (vm *VM) deploy() error {
 	deploymentsClient := resources.NewDeploymentsClient(vm.Creds.SubscriptionID)
 	deploymentsClient.Authorizer = authorizer
 
-	_, err = deploymentsClient.CreateOrUpdate(vm.ResourceGroup, vm.deploymentName, *deployment, nil)
+	_, err = deploymentsClient.CreateOrUpdate(vm.ResourceGroup, vm.DeploymentName, *deployment, nil)
 	if err != nil {
 		return err
 	}
 
 	// Make sure the deployment is succeeded
 	for i := 0; i < actionTimeout; i++ {
-		result, err := deploymentsClient.Get(vm.ResourceGroup, vm.deploymentName)
+		result, err := deploymentsClient.Get(vm.ResourceGroup, vm.DeploymentName)
 		if err != nil {
 			return err
 		}
@@ -308,14 +307,4 @@ func translateState(azureState string) string {
 	default:
 		return lvm.VMUnknown
 	}
-}
-
-func randStringRunes(n int) string {
-	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letterRunes[r.Intn(len(letterRunes))]
-	}
-	return string(b)
 }
