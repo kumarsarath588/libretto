@@ -32,17 +32,14 @@ const (
 	StatePending = "pending"
 )
 
-// SSHTimeout is the maximum time to wait before failing to GetSSH. This is not
-// thread-safe.
-var SSHTimeout = 5 * time.Minute
-
 var (
+	// SSHTimeout is the maximum time to wait before failing to GetSSH. This is
+	// not thread-safe.
+	SSHTimeout = 5 * time.Minute
+
 	// This ensures that aws.VM implements the virtualmachine.VirtualMachine
 	// interface at compile time.
 	_ virtualmachine.VirtualMachine = (*VM)(nil)
-
-	// limiter rate limits channel to prevent saturating AWS API limits.
-	limiter = time.Tick(time.Millisecond * 500)
 )
 
 var (
@@ -153,7 +150,6 @@ func (vm *VM) SetTags(tags map[string]string) error {
 // there was a problem during creation, if there was a problem adding a tag, or
 // if the VM takes too long to enter "running" state.
 func (vm *VM) Provision() error {
-	<-limiter
 	svc, err := getService(vm.Region)
 	if err != nil {
 		return fmt.Errorf("failed to get AWS service: %v", err)
