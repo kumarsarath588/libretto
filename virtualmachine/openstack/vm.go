@@ -300,9 +300,7 @@ func (vm *VM) Provision() error {
 // returns nil if there was an error obtaining the IPs.
 func (vm *VM) GetIPs() ([]net.IP, error) {
 	server, err := getServer(vm)
-	if err != nil {
-	}
-	if server == nil {
+	if server == nil || err != nil {
 		// Probably need to call Provision first.
 		return nil, err
 	}

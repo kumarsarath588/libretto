@@ -114,7 +114,7 @@ func (vm *VM) Provision() error {
 	}
 
 	// Set up private members of the VM
-	tempName := fmt.Sprintf("%s", randStringRunes(5))
+	tempName := randStringRunes(5)
 	if vm.OsFile == "" {
 		vm.OsFile = tempName + "-os-disk.vhd"
 	}
