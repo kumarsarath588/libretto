@@ -3,6 +3,7 @@
 package vsphere
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -11,8 +12,6 @@ import (
 	"regexp"
 	"strings"
 	"testing"
-
-	"golang.org/x/net/context"
 
 	"github.com/apcera/libretto/virtualmachine"
 	"github.com/vmware/govmomi"
@@ -547,7 +546,7 @@ func TestResetUnitNumbers(t *testing.T) {
 	vmSpec.ConfigSpec.DeviceChange = []types.BaseVirtualDeviceConfigSpec{
 		&types.VirtualDeviceConfigSpec{
 			Device: &types.VirtualDevice{
-				UnitNumber: 0,
+				UnitNumber: new(int32),
 			},
 		},
 	}
@@ -558,7 +557,7 @@ func TestResetUnitNumbers(t *testing.T) {
 	if len(s.DeviceChange) != 1 {
 		t.Fatalf("Expected only one device, got: %d", len(s.DeviceChange))
 	}
-	if n := s.DeviceChange[0].GetVirtualDeviceConfigSpec().Device.GetVirtualDevice().UnitNumber; n != -1 {
+	if n := s.DeviceChange[0].GetVirtualDeviceConfigSpec().Device.GetVirtualDevice().UnitNumber; *n != -1 {
 		t.Fatalf("Expected to get -1 for the unit number, got: %d", n)
 	}
 }

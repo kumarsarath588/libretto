@@ -29,7 +29,7 @@ Getting Started
 
 Go version 1.7+ is required.
 
-`go get github.com/apcera/libretto/...`
+`go get -u github.com/apcera/libretto/...`
 
 `go build ./...`
 
@@ -398,8 +398,8 @@ Libretto `VirtualMachine` interface. The provider should work at the minimum on
 the Linux, Windows and OS X platforms unless it is a platform specific provider
 in which case it should at least compile and return a descriptive error.
 
-Dependencies should be versioned and stored using `gvt`
-(https://github.com/FiloSottile/gvt)
+Dependencies should be vendored using [`dep ensure`](https://github.com/golang/dep),
+followed by [`govend --prune`](https://github.com/govend/govend).
 
 Errors should be lower case so that they can be wrapped by the calling code. If
 possible, types defined in the top level `virtualmachine` package should be

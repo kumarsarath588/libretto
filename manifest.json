@@ -1,0 +1,52 @@
+{
+    "dependencies": {
+        "github.com/Azure/go-autorest": {
+            "version": "^7.0.0"
+        },
+        "github.com/apcera/util": {
+            "branch": "master"
+        },
+        "github.com/aws/aws-sdk-go": {
+            "version": "^1.0.0"
+        },
+        "github.com/dgrijalva/jwt-go": {
+            "version": "^3.0.0"
+        },
+        "github.com/go-ini/ini": {
+            "version": "^1.0.0"
+        },
+        "github.com/golang/protobuf/proto": {
+            "branch": "master"
+        },
+        "github.com/googleapis/gax-go": {
+            "branch": "master"
+        },
+        "github.com/gophercloud/gophercloud": {
+            "branch": "master"
+        },
+        "github.com/jmespath/go-jmespath": {
+            "version": ">=0.0.0, <1.0.0"
+        },
+        "github.com/pyr/egoscale": {
+            "branch": "master"
+        },
+        "github.com/vmware/govmomi": {
+            "version": ">=0.13.0, <1.0.0"
+        },
+        "golang.org/x/crypto": {
+            "branch": "master"
+        },
+        "golang.org/x/net": {
+            "branch": "master"
+        },
+        "golang.org/x/oauth2": {
+            "branch": "master"
+        },
+        "google.golang.org/appengine": {
+            "version": "^1.0.0"
+        },
+        "google.golang.org/grpc": {
+            "version": "^1.0.0"
+        }
+    }
+}
