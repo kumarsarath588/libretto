@@ -173,7 +173,7 @@ func (vm *VM) GetIPs() ([]net.IP, error) {
 
 // GetState gets the power state of the VM being serviced by this driver.
 func (vm *VM) GetState() (string, error) {
-	stdout, err := runner.RunCombinedError("showvminfo", fmt.Sprintf("%s", vm.Name))
+	stdout, err := runner.RunCombinedError("showvminfo", vm.Name)
 	if err != nil {
 		return "", lvm.WrapErrors(lvm.ErrVMInfoFailed, err)
 	}
@@ -192,7 +192,7 @@ func (vm *VM) GetState() (string, error) {
 // GetInterfaces gets all the network cards attached to this VM
 func (vm *VM) GetInterfaces() ([]NIC, error) {
 	nics := []NIC{}
-	stdout, err := runner.RunCombinedError("showvminfo", fmt.Sprintf("%s", vm.Name))
+	stdout, err := runner.RunCombinedError("showvminfo", vm.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -243,7 +243,7 @@ func (vm *VM) Provision() error {
 
 	// See comment on mutex definition for details.
 	createMutex.Lock()
-	_, err = runner.RunCombinedError("import", vm.Src, "--vsys", "0", "--vmname", fmt.Sprintf("%s", vm.Name))
+	_, err = runner.RunCombinedError("import", vm.Src, "--vsys", "0", "--vmname", vm.Name)
 	createMutex.Unlock()
 	if err != nil {
 		return err

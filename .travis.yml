@@ -15,6 +15,7 @@ env:
 
 before_install:
   - go get -u honnef.co/go/tools/cmd/gosimple
+  - go get -u honnef.co/go/tools/cmd/staticcheck
   - go get -u honnef.co/go/tools/cmd/unused
 
 # don't go get deps. will only build with code in vendor directory.
@@ -26,6 +27,7 @@ script:
   - go_files=$(find . -iname '*.go' | grep -v vendor/)
   - test -z $(gofmt -s -l $go_files)
   - go vet $pkgs
+  - staticcheck $pkgs
   - go test -v -race $pkgs
   - gosimple $pkgs
   - unused $pkgs
