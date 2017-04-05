@@ -206,8 +206,8 @@ func (vm *VM) GetState() (string, error) {
 		return "", e
 	}
 
-	if r.Properties != nil && r.Properties.InstanceView != nil && len(*r.Properties.InstanceView.Statuses) > 1 {
-		state := *(*r.Properties.InstanceView.Statuses)[1].DisplayStatus
+	if r.VirtualMachineProperties != nil && r.VirtualMachineProperties.InstanceView != nil && len(*r.VirtualMachineProperties.InstanceView.Statuses) > 1 {
+		state := *(*r.VirtualMachineProperties.InstanceView.Statuses)[1].DisplayStatus
 		return translateState(state), e
 	}
 

@@ -24,7 +24,7 @@ install: true
 script:
   # pkgs avoids testing anything in vendor/
   - pkgs=$(go list ./... | grep -v /vendor/)
-  - go_files=$(find . -iname '*.go' | grep -v vendor/)
+  - go_files=$(find . -iname '*.go' | grep -v /vendor/)
   - test -z $(gofmt -s -l $go_files)
   - go vet $pkgs
   - staticcheck $pkgs

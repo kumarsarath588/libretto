@@ -11,11 +11,11 @@ import (
 	"time"
 
 	armStorage "github.com/Azure/azure-sdk-for-go/arm/storage"
+	storage "github.com/Azure/azure-storage-go"
 	lvm "github.com/apcera/libretto/virtualmachine"
 
 	"github.com/Azure/azure-sdk-for-go/arm/network"
 	"github.com/Azure/azure-sdk-for-go/arm/resources/resources"
-	"github.com/Azure/azure-sdk-for-go/storage"
 	"github.com/Azure/go-autorest/autorest/azure"
 )
 
@@ -196,11 +196,11 @@ func (vm *VM) getPublicIP(authorizer *azure.ServicePrincipalToken) (net.IP, erro
 		return nil, err
 	}
 
-	if resPublicIP.Properties == nil || resPublicIP.Properties.IPAddress == nil ||
-		*resPublicIP.Properties.IPAddress == "" {
+	if resPublicIP.PublicIPAddressPropertiesFormat == nil || resPublicIP.PublicIPAddressPropertiesFormat.IPAddress == nil ||
+		*resPublicIP.PublicIPAddressPropertiesFormat.IPAddress == "" {
 		return nil, fmt.Errorf("VM has no public IP address")
 	}
-	return net.ParseIP(*resPublicIP.Properties.IPAddress), nil
+	return net.ParseIP(*resPublicIP.PublicIPAddressPropertiesFormat.IPAddress), nil
 }
 
 // getPrivateIP returns the private IP of the given VM, if exists one.
@@ -208,20 +208,20 @@ func (vm *VM) getPrivateIP(authorizer *azure.ServicePrincipalToken) (net.IP, err
 	interfaceClient := network.NewInterfacesClient(vm.Creds.SubscriptionID)
 	interfaceClient.Authorizer = authorizer
 
-	resPrivateIP, err := interfaceClient.Get(vm.ResourceGroup, vm.Nic, "")
+	iface, err := interfaceClient.Get(vm.ResourceGroup, vm.Nic, "")
 	if err != nil {
 		return nil, err
 	}
 
-	if resPrivateIP.Properties == nil || resPrivateIP.Properties.IPConfigurations == nil ||
-		len(*resPrivateIP.Properties.IPConfigurations) == 0 {
+	if iface.InterfacePropertiesFormat == nil || iface.InterfacePropertiesFormat.IPConfigurations == nil ||
+		len(*iface.InterfacePropertiesFormat.IPConfigurations) == 0 {
 		return nil, fmt.Errorf("VM has no private IP address")
 	}
-	ipConfigs := *resPrivateIP.Properties.IPConfigurations
+	ipConfigs := *iface.InterfacePropertiesFormat.IPConfigurations
 	if len(ipConfigs) > 1 {
 		return nil, fmt.Errorf("VM has multiple private IP addresses")
 	}
-	return net.ParseIP(*ipConfigs[0].Properties.PrivateIPAddress), nil
+	return net.ParseIP(*ipConfigs[0].InterfaceIPConfigurationPropertiesFormat.PrivateIPAddress), nil
 }
 
 // deleteOSFile deletes the OS file from the VM's storage account, returns an error if the operation
@@ -230,12 +230,18 @@ func (vm *VM) deleteVMFiles(authorizer *azure.ServicePrincipalToken) error {
 	storageAccountsClient := armStorage.NewAccountsClient(vm.Creds.SubscriptionID)
 	storageAccountsClient.Authorizer = authorizer
 
-	accountKeys, err := storageAccountsClient.ListKeys(vm.ResourceGroup, vm.StorageAccount)
+	result, err := storageAccountsClient.ListKeys(vm.ResourceGroup, vm.StorageAccount)
 	if err != nil {
 		return err
 	}
 
-	storageClient, err := storage.NewBasicClient(vm.StorageAccount, *accountKeys.Key1)
+	accountKeys := result.Keys
+	if accountKeys == nil || len(*accountKeys) == 0 {
+		return fmt.Errorf("no account keys for storage account %q", vm.StorageAccount)
+	}
+
+	accountKey := *(*accountKeys)[0].Value
+	storageClient, err := storage.NewBasicClient(vm.StorageAccount, accountKey)
 	if err != nil {
 		return err
 	}

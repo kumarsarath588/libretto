@@ -183,6 +183,7 @@ func (client *SSHClient) Connect() error {
 		Auth: []cssh.AuthMethod{
 			auth,
 		},
+		HostKeyCallback: cssh.InsecureIgnoreHostKey(),
 	}
 
 	port := sshPort
