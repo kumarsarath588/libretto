@@ -214,7 +214,7 @@ var resetUnitNumbers = func(spec *types.OvfCreateImportSpecResult) {
 	s := &spec.ImportSpec.(*types.VirtualMachineImportSpec).ConfigSpec
 	for _, d := range s.DeviceChange {
 		n := d.GetVirtualDeviceConfigSpec().Device.GetVirtualDevice().UnitNumber
-		if *n == 0 {
+		if n != nil && *n == 0 {
 			*n = -1
 		}
 	}
